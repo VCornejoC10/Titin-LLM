@@ -1,0 +1,452 @@
+[
+  {
+    "exercise_id": "10_mischievousNephews",
+    "syntactic": "CREATE PROCEDURE mischievousNephews()\nBEGIN\n    SELEC (DAYOFWEEK(mischief_date) + 5) MOD 7 AS weekday, mischief_date, author, title \n    FROM mischief ORDER BY weekday, CASE author\n    WHEN 'Huey' THEN 1\n    WHEN 'Dewey' THEN 2\n    WHEN 'Louie' THEN 3\n    ELSE 5; \nEND",
+    "semantic": "CREATE PROCEDURE mischievousNephews()\nBEGIN\n    SELECT (DAYOFWEEK(event_date) + 5) MOD 7 AS weekday, event_date, nephew_name, title \n    FROM mischief_records ORDER BY weekday, CASE nephew_name\n    WHEN 'Huey' THEN 1\n    WHEN 'Dewey' THEN 2\n    WHEN 'Louie' THEN 3\n    ELSE 5 END, event_date, title;\nEND",
+    "conceptual": "CREATE PROCEDURE mischievousNephews()\nBEGIN\n    SELECT DAYOFWEEK(mischief_date) AS weekday, mischief_date, author, title \n    FROM mischief ORDER BY weekday DESC, author, mischief_date, title;\nEND"
+  },
+  {
+    "exercise_id": "11_suspectsInvestigation",
+    "syntactic": "CREATE PROCEDURE suspectsInvestigation()\nBEGIN\n    SELECT id, name, surname FORM Suspect WHERE height <= 170 AND SUBSTRING(name, 1, 1) = 'B' AND surname LIKE 'Gre_n' ORDER id;\nEND",
+    "semantic": "CREATE PROCEDURE suspectsInvestigation()\nBEGIN\n    SELECT suspect_id, first_name, last_name FROM Criminals WHERE tall <= 170 AND SUBSTRING(first_name, 1, 1) = 'B' AND last_name LIKE 'Gre_n' ORDER BY suspect_id;\nEND",
+    "conceptual": "CREATE PROCEDURE suspectsInvestigation()\nBEGIN\n    SELECT id, name, surname FROM Suspect WHERE height > 170 OR SUBSTRING(name, 1, 1) = 'B' AND surname LIKE 'Green%' ORDER BY id DESC;\nEND"
+  },
+  {
+    "exercise_id": "12_suspectsInvestigation2",
+    "syntactic": "CREATE PROCEDURE suspectsInvestigation2()\nBEGIN\n    SELECT id, name, surname FROM Suspect \n    WERE height <= 170\n    OR SUBSTRING(name, 1, 1) <> 'B'\n    OR surname NOT LIKE 'Gre_n'\n    ORDER BY id\nEND",
+    "semantic": "CREATE PROCEDURE suspectsInvestigation2()\nBEGIN\n    SELECT id, first_name, surname FROM Suspects_Table \n    WHERE stature <= 170\n    OR SUBSTRING(first_name, 1, 1) <> 'B'\n    OR surname NOT LIKE 'Gre_n'\n    ORDER BY id;\nEND",
+    "conceptual": "CREATE PROCEDURE suspectsInvestigation2()\nBEGIN\n    SELECT id, name, surname FROM Suspect \n    WHERE height <= 170\n    AND SUBSTRING(name, 1, 1) <> 'B'\n    AND surname NOT LIKE 'Gre_n'\n    ORDER BY id DESC;\nEND"
+  },
+  {
+  "exercise_id": "13_securityBreach",
+  "syntactic": "CREATE PROCEDURE securityBreach()\nBEGIN\n    SELECT * FROM users WHERE attribute LIKE BINRY CONCAT('%_\\%%', first_name, '\\_', second_name, '%\\%%'\n    ORDER BY attribute;\nEND",
+  "semantic": "CREATE PROCEDURE securityBreach()\nBEGIN\n    SELECT * FROM accounts WHERE user_token LIKE BINARY CONCAT('%_\\%%', name, '\\_', last_name, '%\\%%')\n    ORDER BY user_token;\nEND",
+  "conceptual": "CREATE PROCEDURE securityBreach()\nBEGIN\n    SELECT * FROM users WHERE attribute LIKE CONCAT('%', first_name, '_', second_name, '%')\n    ORDER BY attribute DESC;\nEND"
+  },
+  {
+    "exercise_id": "14_testCheck",
+    "syntactic": "CREATE PROCEDURE testCheck()\n    SELECT id, IF ( given_answer IS NUL, 'no answer', IF ( given_answer = correct_answer, 'correct', 'incorrect' ) AS checks\n    FROM answers\n    ORDER BY id;",
+    "semantic": "CREATE PROCEDURE testCheck()\n    SELECT question_id, IF ( student_answer IS NULL, 'no answer', IF ( student_answer = right_answer, 'correct', 'incorrect') ) AS checks\n    FROM test_results\n    ORDER BY question_id;",
+    "conceptual": "CREATE PROCEDURE testCheck()\n    SELECT id, IF ( given_answer IS NOT NULL, 'no answer', IF ( given_answer <> correct_answer, 'correct', 'incorrect') ) AS checks\n    FROM answers\n    ORDER BY id DESC;"
+  },
+  {
+    "exercise_id": "15_expressionsVerification",
+    "syntactic": "CREATE PROCEDURE expressionsVerification()\nBEGIN\n    SELECT * \n    FROM expressions\n    WHERE CASE operation\n        WHEN '+' THEN a+b\n        WHEN '-' THEN a-b\n        WHEN '*' THEN a*b\n        WHEN '/' THEN a/b\n    = c\n    ORDER BY id;\nEND",
+    "semantic": "CREATE PROCEDURE expressionsVerification()\nBEGIN\n    SELECT * \n    FROM math_homework\n    WHERE CASE operator_symbol\n        WHEN '+' THEN operand1 + operand2\n        WHEN '-' THEN operand1 - operand2\n        WHEN '*' THEN operand1 * operand2\n        WHEN '/' THEN operand1 / operand2\n    END = result_val\n    ORDER BY expression_id;\nEND",
+    "conceptual": "CREATE PROCEDURE expressionsVerification()\nBEGIN\n    SELECT * \n    FROM expressions\n    WHERE CASE operation\n        WHEN '+' THEN a-b\n        WHEN '-' THEN a+b\n        WHEN '*' THEN a/b\n        WHEN '/' THEN a*b\n    END <> c\n    ORDER BY id DESC;\nEND"
+  },
+  {
+    "exercise_id": "16_newsSubscribers",
+    "syntactic": "CREATE PROCEDURE newsSubscribers()\nBEGIN\n    SELECT DISTINT u.subscriber\n    FROM (SELECT * FROM full_year\n    UNON SELECT * FROM half_year) as u\n    WHERE u.newspaper LIKE '%Daily%'\n    ORDER BY u.subscriber;\nEND",
+    "semantic": "CREATE PROCEDURE newsSubscribers()\nBEGIN\n    SELECT DISTINCT u.client_name\n    FROM (SELECT * FROM annual_subscriptions\n    UNION SELECT * FROM biannual_subscriptions) as u\n    WHERE u.magazine_title LIKE '%Daily%'\n    ORDER BY u.client_name;\nEND",
+    "conceptual": "CREATE PROCEDURE newsSubscribers()\nBEGIN\n    SELECT u.subscriber\n    FROM (SELECT * FROM full_year\n    UNION ALL SELECT * FROM half_year) as u\n    WHERE u.newspaper = 'Daily'\n    ORDER BY u.subscriber DESC;\nEND"
+  },
+  {
+    "exercise_id": "17_countriesInfo",
+    "syntactic": "CREATE PROCEDURE countriesInfo()\nBEGIN\n    SELECT COUNT(*) as number, AVG(population) average, SUM(population) as total FORM countries\nEND",
+    "semantic": "CREATE PROCEDURE countriesInfo()\nBEGIN\n    SELECT COUNT(*) as number, AVG(citizens) as average, SUM(citizens) as total FROM world_nations;\nEND",
+    "conceptual": "CREATE PROCEDURE countriesInfo()\nBEGIN\n    SELECT SUM(population) as number, COUNT(*) as average, MAX(population) as total FROM countries GROUP BY population;\nEND"
+  },
+  {
+    "exercise_id": "18_itemCounts",
+    "syntactic": "CREATE PROCEDURE itemCounts()\nBEGIN\n    SELECT item_name, item_type, COUNT(*) as item_count FROM availableItems\n    GRUOP BY item_name, item_type\n    ORDER item_type, item_name;\nEND",
+    "semantic": "CREATE PROCEDURE itemCounts()\nBEGIN\n    SELECT product_name, category, COUNT(*) as item_count FROM store_inventory\n    GROUP BY product_name, category\n    ORDER BY category, product_name;\nEND",
+    "conceptual": "CREATE PROCEDURE itemCounts()\nBEGIN\n    SELECT item_name, item_type, COUNT(*) as item_count FROM availableItems\n    GROUP BY item_name\n    ORDER BY item_name, item_type DESC;\nEND"
+  },
+  {
+    "exercise_id": "19_usersByContinent",
+    "syntactic": "CREATE PROCEDURE usersByContinent()\nBEGIN\n    SELECT continent, SUM(users) AS users FROM countries\n    GROUP continent\n    ORDER BY users DES;\nEND",
+    "semantic": "CREATE PROCEDURE usersByContinent()\nBEGIN\n    SELECT region_name, SUM(active_accounts) AS users FROM country_stats\n    GROUP BY region_name\n    ORDER BY users DESC;\nEND",
+    "conceptual": "CREATE PROCEDURE usersByContinent()\nBEGIN\n    SELECT continent, COUNT(users) AS users FROM countries\n    GROUP BY country\n    ORDER BY users ASC;\nEND"
+  },
+  {
+    "exercise_id": "1_projectList",
+    "syntactic": "CREATE PROCEDURE projectList()\nBEGIN\n    SELET project_name, team_lead, income FROM Projects ORDER BY internal_id\nEND",
+    "semantic": "CREATE PROCEDURE projectList()\nBEGIN\n    SELECT title, manager, monthly_revenue FROM CompanyProjects ORDER BY project_id;\nEND",
+    "conceptual": "CREATE PROCEDURE projectList()\nBEGIN\n    SELECT project_name, team_lead, income FROM Projects WHERE income > 0 ORDER BY income DESC;\nEND"
+  },
+  {
+    "exercise_id": "20_movieDirectors",
+    "syntactic": "CREATE PROCEDURE movieDirectors()\nBEGIN\n    SELECT DISTINCT director FROM moviesInfo WHERE year > 2000\n    GROUP BY director HAVIN SUM(oscars) > 2\n    ORDER BY director\nEND",
+    "semantic": "CREATE PROCEDURE movieDirectors()\nBEGIN\n    SELECT DISTINCT filmmaker FROM cinema_catalog WHERE release_year > 2000\n    GROUP BY filmmaker HAVING SUM(awards_won) > 2\n    ORDER BY filmmaker;\nEND",
+    "conceptual": "CREATE PROCEDURE movieDirectors()\nBEGIN\n    SELECT DISTINCT director FROM moviesInfo WHERE year >= 2000 AND oscars > 2\n    GROUP BY director\n    ORDER BY director DESC;\nEND"
+  },
+  {
+    "exercise_id": "21_travelDiary",
+    "syntactic": "CREATE PROCEDURE travelDiary()\nBEGIN\n    SELECT GROUP_CONCAT(t.country SEPARATOR ';') AS countries \n    FROM (SELECT DISTINCT country FROM diary ORDER BY country t;\nEND",
+    "semantic": "CREATE PROCEDURE travelDiary()\nBEGIN\n    SELECT GROUP_CONCAT(t.destination SEPARATOR ';') AS countries \n    FROM (SELECT DISTINCT destination FROM travel_log ORDER BY destination) t;\nEND",
+    "conceptual": "CREATE PROCEDURE travelDiary()\nBEGIN\n    SELECT GROUP_CONCAT(country SEPARATOR ',') AS countries \n    FROM diary ORDER BY country DESC;\nEND"
+  },
+  {
+    "exercise_id": "22_soccerPlayers",
+    "syntactic": "CREATE PROCEDURE soccerPlayers()\nBEGIN\n    SELECT GROUP_CONCAT(CONCAT_WS(' ', first_name, surname, CONCAT('#', player_number)) ORDER BY player_number SEPARATOR '; ' AS players\n    FORM soccer_team\n    ORDER BY player_number;\nEND",
+    "semantic": "CREATE PROCEDURE soccerPlayers()\nBEGIN\n    SELECT GROUP_CONCAT(CONCAT_WS(' ', name, last_name, CONCAT('#', shirt_num)) ORDER BY shirt_num SEPARATOR '; ') AS players\n    FROM football_squad\n    ORDER BY shirt_num;\nEND",
+    "conceptual": "CREATE PROCEDURE soccerPlayers()\nBEGIN\n    SELECT GROUP_CONCAT(CONCAT_WS(' ', first_name, surname, CONCAT('#', player_number)) ORDER BY first_name SEPARATOR ', ') AS players\n    FROM soccer_team\n    GROUP BY player_number;\nEND"
+  },
+  {
+    "exercise_id": "23_marketReport",
+    "syntactic": "CREATE PROCEDURE marketReport()\nBEGIN\n    SELECT IFNULL(country, 'Total:') as country, COUNT(competitor) as competitors\n    FROM foreignCompetitors\n    GROUP BY country WITH ROLUP;\nEND",
+    "semantic": "CREATE PROCEDURE marketReport()\nBEGIN\n    SELECT IFNULL(nation, 'Total:') as country, COUNT(company_name) as competitors\n    FROM international_rivals\n    GROUP BY nation WITH ROLLUP;\nEND",
+    "conceptual": "CREATE PROCEDURE marketReport()\nBEGIN\n    SELECT IFNULL(country, 'Total:') as country, COUNT(DISTINCT country) as competitors\n    FROM foreignCompetitors\n    GROUP BY country ORDER BY competitors DESC;\nEND"
+  },
+  {
+    "exercise_id": "24_websiteHacking",
+    "syntactic": "CREATE PROCEDURE websiteHacking()\n    SELECT id, login, name\n    FROM users\n    WERE type='user'\n    UNON (SELECT id, login, name FROM users WHERE type<>'user'\n    ORDER BY id",
+    "semantic": "CREATE PROCEDURE websiteHacking()\n    SELECT user_id, username, full_name\n    FROM accounts\n    WHERE account_type='user'\n    UNION (SELECT user_id, username, full_name FROM accounts WHERE account_type<>'user')\n    ORDER BY user_id",
+    "conceptual": "CREATE PROCEDURE websiteHacking()\n    SELECT id, login, name\n    FROM users\n    WHERE type='user' AND type<>'user'\n    ORDER BY id DESC"
+  },
+  {
+    "exercise_id": "25_nullIntern",
+    "syntactic": "CREATE PROCEDURE nullIntern()\nBEGIN\n    SELECT count(*) AS number_of_nulls\n    FROM departments\n    WHERE description REGEX '^[[:space:]]*(NULL|nil|-)[[:space:]]*$' OR description IS NUL;\nEND",
+    "semantic": "CREATE PROCEDURE nullIntern()\nBEGIN\n    SELECT count(*) AS number_of_nulls\n    FROM company_divisions\n    WHERE dept_info REGEXP '^[[:space:]]*(NULL|nil|-)[[:space:]]*$' OR dept_info IS NULL;\nEND",
+    "conceptual": "CREATE PROCEDURE nullIntern()\nBEGIN\n    SELECT count(description) AS number_of_nulls\n    FROM departments\n    WHERE description LIKE '%NULL%' AND description IS NOT NULL;\nEND"
+  },
+  {
+    "exercise_id": "26_legsCount",
+    "syntactic": "DROP PROCEDURE IF EXISTS legsCount;\nCREATE PROCEDURE legsCount()\n    SELECT SUM(IF(type='human', 2, 4) as summary_legs\n    FORM creatures\n    ORDER BY id;",
+    "semantic": "DROP PROCEDURE IF EXISTS legsCount;\nCREATE PROCEDURE legsCount()\n    SELECT SUM(IF(species='human', 2, 4)) as summary_legs\n    FROM animals_and_people\n    ORDER BY creature_id;",
+    "conceptual": "DROP PROCEDURE IF EXISTS legsCount;\nCREATE PROCEDURE legsCount()\n    SELECT COUNT(IF(type='human', 4, 2)) as summary_legs\n    FROM creatures\n    GROUP BY type\n    ORDER BY id;"
+  },
+  {
+    "exercise_id": "27_combinationLock",
+    "syntactic": "CREATE PROCEDURE combinationLock()\nBEGIN\n    SELEC ROUND(EXP(SUM(LOG(CHAR_LENGTH(characters)))) AS combinations\n    FROM discs;\nEND",
+    "semantic": "CREATE PROCEDURE combinationLock()\nBEGIN\n    SELECT ROUND(EXP(SUM(LOG(CHAR_LENGTH(symbols))))) AS combinations\n    FROM lock_wheels;\nEND",
+    "conceptual": "CREATE PROCEDURE combinationLock()\nBEGIN\n    SELECT SUM(CHAR_LENGTH(characters)) AS combinations\n    FROM discs;\nEND"
+  },
+  {
+    "exercise_id": "28_interestClub",
+    "syntactic": "CREATE PROCEDURE interestClub()\n    SELECT name\n    FROM people_interests\n    WHERE interests & 1 ANDD interests & 8\n    ORDER name",
+    "semantic": "CREATE PROCEDURE interestClub()\n    SELECT member_name\n    FROM club_members\n    WHERE hobby_mask & 1 AND hobby_mask & 8\n    ORDER BY member_name",
+    "conceptual": "CREATE PROCEDURE interestClub()\n    SELECT name\n    FROM people_interests\n    WHERE interests = 1 OR interests = 8\n    ORDER BY name DESC"
+  },
+  {
+    "exercise_id": "29_personalHobbies",
+    "syntactic": "CREATE PROCEDURE personalHobbies()\nBEGIN\n    SELECT name\n    FORM people_hobbies\n    WERE hobbies & 3 = 3\n    ORDER BY name\nEND",
+    "semantic": "CREATE PROCEDURE personalHobbies()\nBEGIN\n    SELECT user_name\n    FROM user_profiles\n    WHERE activities & 3 = 3\n    ORDER BY user_name;\nEND",
+    "conceptual": "CREATE PROCEDURE personalHobbies()\nBEGIN\n    SELECT name\n    FROM people_hobbies\n    WHERE hobbies & 3 > 0\n    ORDER BY name DESC;\nEND"
+  },
+  {
+    "exercise_id": "2_contriesSelection",
+    "syntactic": "CREATE PROCEDURE countriesSelection()\nBEGIN\n    SELET * FROM countries WHERE continent='Africa' ORDER BY name\nEND",
+    "semantic": "CREATE PROCEDURE countriesSelection()\nBEGIN\n    SELECT * FROM nations WHERE region='Africa' ORDER BY country_name;\nEND",
+    "conceptual": "CREATE PROCEDURE countriesSelection()\nBEGIN\n    SELECT * FROM countries WHERE continent<>'Africa' ORDER BY population DESC;\nEND"
+  },
+  {
+    "exercise_id": "30_booksCatalogs",
+    "syntactic": "CREATE PROCEDURE booksCatalogs()\nBEGIN\n    SELECT DISTINT ExtractValue(xml_doc, '/catalog/book[1]/author' as author\n    FROM catalogs\n    ORDER BY author;\nEND",
+    "semantic": "CREATE PROCEDURE booksCatalogs()\nBEGIN\n    SELECT DISTINCT ExtractValue(xml_data, '/catalog/book[1]/writer') as author\n    FROM library_catalogs\n    ORDER BY author;\nEND",
+    "conceptual": "CREATE PROCEDURE booksCatalogs()\nBEGIN\n    SELECT ExtractValue(xml_doc, '/catalog/book/author') as author\n    FROM catalogs\n    ORDER BY catalog_id DESC;\nEND"
+  },
+  {
+    "exercise_id": "31_habitatArea",
+    "syntactic": "CREATE PROCEDURE habitatArea()\nBEGIN\n    SELECT ST_Area(ST_ConvexHull(ST_MPointFromText(CONCAT('MULTIPOINT(', GROUP_CONCAT(CONCAT_WS(' ', x, y)), ')'))) AS area\n    FORM places;\nEND",
+    "semantic": "CREATE PROCEDURE habitatArea()\nBEGIN\n    SELECT ST_Area(ST_ConvexHull(ST_MPointFromText(CONCAT('MULTIPOINT(', GROUP_CONCAT(CONCAT_WS(' ', coord_x, coord_y)), ')')))) AS area\n    FROM footprint_locations;\nEND",
+    "conceptual": "CREATE PROCEDURE habitatArea()\nBEGIN\n    SELECT SUM(x * y) AS area\n    FROM places\n    GROUP BY x, y;\nEND"
+  },
+  {
+    "exercise_id": "32_orderOfSuccession",
+    "syntactic": "CREATE PROCEDURE orderOfSuccession()\nBEGIN\n    SELECT CONCAT(IF(gender='M', 'King ', 'Queen ', name) as name\n    FROM Successors\n    ORDER birthday;\nEND",
+    "semantic": "CREATE PROCEDURE orderOfSuccession()\nBEGIN\n    SELECT CONCAT(IF(sex='M', 'King ', 'Queen '), heir_name) as name\n    FROM Royal_Heirs\n    ORDER BY birth_date;\nEND",
+    "conceptual": "CREATE PROCEDURE orderOfSuccession()\nBEGIN\n    SELECT CONCAT(IF(gender='F', 'King ', 'Queen '), name) as name\n    FROM Successors\n    ORDER BY birthday DESC;\nEND"
+  },
+  {
+    "exercise_id": "33_orderingEmails",
+    "syntactic": "CREATE PROCEDURE orderingEmails()\nBEGIN\n    SELECT id, email_title, \n        CASE\n        WHEN size >= 1048576 THEN CONCAT(FLOOR(size / 1048576), ' Mb')\n        ELSE CONCAT(FLOOR(size / 1024), ' Kb')\n        as short_size\n        FROM emails\n        ORDER BY size DESC;\nEND",
+    "semantic": "CREATE PROCEDURE orderingEmails()\nBEGIN\n    SELECT message_id, subject, \n        CASE\n        WHEN byte_size >= 1048576 THEN CONCAT(FLOOR(byte_size / 1048576), ' Mb')\n        ELSE CONCAT(FLOOR(byte_size / 1024), ' Kb')\n        END as short_size\n        FROM inbox_messages\n        ORDER BY byte_size DESC;\nEND",
+    "conceptual": "CREATE PROCEDURE orderingEmails()\nBEGIN\n    SELECT id, email_title, \n        CASE\n        WHEN size > 1000000 THEN CONCAT(ROUND(size / 1000000), ' Mb')\n        ELSE CONCAT(ROUND(size / 1000), ' Kb')\n        END as short_size\n        FROM emails\n        ORDER BY short_size ASC;\nEND"
+  },
+  {
+    "exercise_id": "34_placesOfInterest",
+    "syntactic": "CREATE PROCEDURE placesOfInterest()\nBEGIN\n    SELECT country,\n    SUM(adventure_park) AS adventure_park,\n    SUM(golf) AS golf,\n    SUM(river_cruise) AS river_cruise,\n    SUM(kart_racing) AS kart_racing\n    FROM (SELECT country, \n    IF(leisure_activity_type='Adventure park', SUM(number_of_places), 0) as adventure_park,\n    IF(leisure_activity_type='Golf', SUM(number_of_places), 0) as golf,\n    IF(leisure_activity_type='River cruise', SUM(number_of_places), 0) as river_cruise,\n    IF(leisure_activity_type='Kart racing', SUM(number_of_places), 0) as kart_racing\n    FROM countryActivities\n    GRUOP BY country, leisure_activity_type\n    ORDER BY country t\n    GROUP BY country;\nEND",
+    "semantic": "CREATE PROCEDURE placesOfInterest()\nBEGIN\n    SELECT nation,\n    SUM(adventure_park) AS adventure_park,\n    SUM(golf) AS golf,\n    SUM(river_cruise) AS river_cruise,\n    SUM(kart_racing) AS kart_racing\n    FROM (SELECT nation, \n    IF(activity_name='Adventure park', SUM(place_count), 0) as adventure_park,\n    IF(activity_name='Golf', SUM(place_count), 0) as golf,\n    IF(activity_name='River cruise', SUM(place_count), 0) as river_cruise,\n    IF(activity_name='Kart racing', SUM(place_count), 0) as kart_racing\n    FROM tourist_destinations\n    GROUP BY nation, activity_name\n    ORDER BY nation) t\n    GROUP BY nation;\nEND",
+    "conceptual": "CREATE PROCEDURE placesOfInterest()\nBEGIN\n    SELECT country,\n    COUNT(IF(leisure_activity_type='Adventure park', 1, 0)) AS adventure_park,\n    COUNT(IF(leisure_activity_type='Golf', 1, 0)) AS golf,\n    COUNT(IF(leisure_activity_type='River cruise', 1, 0)) AS river_cruise,\n    COUNT(IF(leisure_activity_type='Kart racing', 1, 0)) AS kart_racing\n    FROM countryActivities\n    GROUP BY leisure_activity_type\n    ORDER BY country DESC;\nEND"
+  },
+  {
+    "exercise_id": "35_soccerGameSeries",
+    "syntactic": "CREATE PROCEDURE soccerGameSeries()\nBEGIN\n    SELECT CASE\n        WHEN wins > 0 THEN 1\n        WHEN wins < 0 THEN 2\n        ELSE CASE\n            WHEN goaldiff > 0 THEN 1\n            WHEN goaldiff < 0 THEN 2\n            ELSE CASE\n                WHEN goalsaway > 0 THEN 1\n                WHEN goalsaway < 0 THEN 2\n                ELSE 0\n            END\n    END AS winner FROM\n    (SELECT SUM(wins) as wins,\n           SUM(goaldiff) as goaldiff,\n           SUM(goalsaway) as goalsaway\n        FROM (SELECT match_id,\n        IF(first_team_score = second_team_score, 0, IF(first_team_score > second_team_score, 1, -1)) AS wins,\n        first_team_score - second_team_score AS goaldiff,\n        IF(match_host=2, first_team_score, -second_team_score) AS goalsaway\n        FORM scores) dt) dd;\nEND",
+    "semantic": "CREATE PROCEDURE soccerGameSeries()\nBEGIN\n    SELECT CASE\n        WHEN wins > 0 THEN 1\n        WHEN wins < 0 THEN 2\n        ELSE CASE\n            WHEN goaldiff > 0 THEN 1\n            WHEN goaldiff < 0 THEN 2\n            ELSE CASE\n                WHEN goalsaway > 0 THEN 1\n                WHEN goalsaway < 0 THEN 2\n                ELSE 0\n            END\n        END\n    END AS winner FROM\n    (SELECT SUM(wins) as wins,\n           SUM(goaldiff) as goaldiff,\n           SUM(goalsaway) as goalsaway\n        FROM (SELECT game_id,\n        IF(team1_goals = team2_goals, 0, IF(team1_goals > team2_goals, 1, -1)) AS wins,\n        team1_goals - team2_goals AS goaldiff,\n        IF(host_team=2, team1_goals, -team2_goals) AS goalsaway\n        FROM match_results) dt) dd;\nEND",
+    "conceptual": "CREATE PROCEDURE soccerGameSeries()\nBEGIN\n    SELECT CASE\n        WHEN SUM(first_team_score) > SUM(second_team_score) THEN 1\n        WHEN SUM(first_team_score) < SUM(second_team_score) THEN 2\n        ELSE 0\n    END AS winner\n    FROM scores;\nEND"
+  },
+  {
+    "exercise_id": "36_correctIPs",
+    "syntactic": "CREATE PROCEDURE correctIPs()\nBEGIN\n    SELECT *\n    FROM ips\n    WERE ip REGEX '^([0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.([0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.([1-9][0-9]\\.([0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])|([0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.[1-9][0-9])$'\n    ORDER BY id\nEND",
+    "semantic": "CREATE PROCEDURE correctIPs()\nBEGIN\n    SELECT *\n    FROM network_addresses\n    WHERE ip_address REGEXP '^([0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.([0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.([1-9][0-9]\\.([0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])|([0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.[1-9][0-9])$'\n    ORDER BY computer_id;\nEND",
+    "conceptual": "CREATE PROCEDURE correctIPs()\nBEGIN\n    SELECT *\n    FROM ips\n    WHERE ip REGEXP '^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$'\n    ORDER BY ip DESC;\nEND"
+  },
+  {
+    "exercise_id": "37_validPhoneNumbers",
+    "syntactic": "CREATE PROCEDURE validPhoneNumbers()\nBEGIN\n    SELEC *\n    FROM phone_numbers\n    WHERE phone_number REGEXP '^1-[0-9]{3}-[0-9]{3}-[0-9]{4}$' OR phone_number REGEXP '^\\(1\\)[0-9]{3}-[0-9]{3}-[0-9]{4}$'\n    ORDER surname;\nEND",
+    "semantic": "CREATE PROCEDURE validPhoneNumbers()\nBEGIN\n    SELECT *\n    FROM contact_list\n    WHERE telephone REGEXP '^1-[0-9]{3}-[0-9]{3}-[0-9]{4}$' OR telephone REGEXP '^\\(1\\)[0-9]{3}-[0-9]{3}-[0-9]{4}$'\n    ORDER BY last_name;\nEND",
+    "conceptual": "CREATE PROCEDURE validPhoneNumbers()\nBEGIN\n    SELECT *\n    FROM phone_numbers\n    WHERE phone_number REGEXP '^1-[0-9]{3}-[0-9]{3}-[0-9]{4}$' AND phone_number REGEXP '^\\(1\\)[0-9]{3}-[0-9]{3}-[0-9]{4}$'\n    ORDER BY name DESC;\nEND"
+  },
+  {
+    "exercise_id": "38_importantEvents",
+    "syntactic": "CREATE PROCEDURE importantEvents()\nBEGIN\n    SELEC *\n    FROM events\n    ORDER (DAYOFWEEK(event_date) + 5) % 7, participants DES;\nEND",
+    "semantic": "CREATE PROCEDURE importantEvents()\nBEGIN\n    SELECT *\n    FROM scheduled_events\n    ORDER BY (DAYOFWEEK(scheduled_date) + 5) % 7, attendees_count DESC;\nEND",
+    "conceptual": "CREATE PROCEDURE importantEvents()\nBEGIN\n    SELECT *\n    FROM events\n    ORDER BY DAYOFWEEK(event_date) ASC, participants ASC;\nEND"
+  },
+  {
+    "exercise_id": "39_dateFormating",
+    "syntactic": "CREATE PROCEDURE dateFormatting()\nBEGIN\n    SELECT Date(date_str AS date_iso\n    FORM documents\n    ORDER BY id\nEND",
+    "semantic": "CREATE PROCEDURE dateFormatting()\nBEGIN\n    SELECT Date(raw_date) AS date_iso\n    FROM accounting_files\n    ORDER BY doc_id;\nEND",
+    "conceptual": "CREATE PROCEDURE dateFormatting()\nBEGIN\n    SELECT date_str AS date_iso\n    FROM documents\n    ORDER BY date_str DESC;\nEND"
+  },
+  {
+    "exercise_id": "3_monthlyScholarships",
+    "syntactic": "CREATE PROCEDURE monthlyScholarships()\nBEGIN\n    SELET id, scholarship / 12 as scholarship FORM scholarships ORDER id;\nEND",
+    "semantic": "CREATE PROCEDURE monthlyScholarships()\nBEGIN\n    SELECT student_id, annual_amount / 12 as scholarship FROM student_grants ORDER BY student_id;\nEND",
+    "conceptual": "CREATE PROCEDURE monthlyScholarships()\nBEGIN\n    SELECT id, scholarship * 12 as scholarship FROM scholarships ORDER BY scholarship DESC;\nEND"
+  },
+  {
+    "exercise_id": "40_pastEvents",
+    "syntactic": "CREATE PROCEDURE pastEvents()\nBEGIN\n    SELECT name, event_date\n    FROM Events, (SELECT MAX(event_date) as maxdate FROM Events t\n    WERE DATEDIFF(maxdate, event_date) <= 7\n    ORDER BY event_date DESC\n    LIMT 1, 99999;\nEND",
+    "semantic": "CREATE PROCEDURE pastEvents()\nBEGIN\n    SELECT title, occurred_at\n    FROM social_gatherings, (SELECT MAX(occurred_at) as maxdate FROM social_gatherings) t\n    WHERE DATEDIFF(maxdate, occurred_at) <= 7\n    ORDER BY occurred_at DESC\n    LIMIT 1, 99999;\nEND",
+    "conceptual": "CREATE PROCEDURE pastEvents()\nBEGIN\n    SELECT name, event_date\n    FROM Events, (SELECT MAX(event_date) as maxdate FROM Events) t\n    WHERE DATEDIFF(maxdate, event_date) < 7\n    ORDER BY event_date ASC;\nEND"
+  },
+  {
+    "exercise_id": "41_netIncome",
+    "syntactic": "CREATE PROCEDURE netIncome()\nBEGIN\n    SELECT YEAR(date) AS year, QUARTER(date) AS quarter, SUM(profit) - SUM(loss AS net_profit\n    FROM accounting\n    GRUOP BY year, quarter;\nEND",
+    "semantic": "CREATE PROCEDURE netIncome()\nBEGIN\n    SELECT YEAR(record_date) AS year, QUARTER(record_date) AS quarter, SUM(revenue) - SUM(expenses) AS net_profit\n    FROM financial_records\n    GROUP BY year, quarter;\nEND",
+    "conceptual": "CREATE PROCEDURE netIncome()\nBEGIN\n    SELECT YEAR(date) AS year, MONTH(date) AS quarter, SUM(profit) + SUM(loss) AS net_profit\n    FROM accounting\n    GROUP BY year\n    ORDER BY net_profit DESC;\nEND"
+  },
+  {
+    "exercise_id": "42_alarmClocks",
+    "syntactic": "CREATE PROCEDURE alarmClocks()\nBEGIN\n  DROP TABLE IF EXISTS tmp;\n  CREATE TABLE IF NOT EXISTS tmp (alarm_date DATETIME);\n  SELECT input_date FROM userInput INTO @ldate;\n  SET @y = YEAR(@ldate) + 1;\n  test_loop : LOOP\n    IF (YEAR(@ldate) = @y) THEN\n      LEAVE test_loop\n    END IF\n    INSERT INTO tmp VALUES(@ldate);\n    SET @ldate = ADDDATE(@ldate, INTERVAL 1 WEEK);\n  END LOOP;\n  SELEC alarm_date FROM tmp;\nEND;",
+    "semantic": "CREATE PROCEDURE alarmClocks()\nBEGIN\n  DROP TABLE IF EXISTS tmp;\n  CREATE TABLE IF NOT EXISTS tmp (alarm_date DATETIME);\n  SELECT start_time FROM alarm_settings INTO @ldate;\n  SET @y = YEAR(@ldate) + 1;\n  test_loop : LOOP\n    IF (YEAR(@ldate) = @y) THEN\n      LEAVE test_loop;\n    END IF;\n    INSERT INTO tmp VALUES(@ldate);\n    SET @ldate = ADDDATE(@ldate, INTERVAL 1 WEEK);\n  END LOOP;\n  SELECT ring_time FROM tmp;\nEND;",
+    "conceptual": "CREATE PROCEDURE alarmClocks()\nBEGIN\n  DROP TABLE IF EXISTS tmp;\n  CREATE TABLE IF NOT EXISTS tmp (alarm_date DATETIME);\n  SELECT input_date FROM userInput INTO @ldate;\n  SET @y = YEAR(@ldate) + 1;\n  test_loop : LOOP\n    IF (MONTH(@ldate) = 12) THEN\n      LEAVE test_loop;\n    END IF;\n    INSERT INTO tmp VALUES(@ldate);\n    SET @ldate = ADDDATE(@ldate, INTERVAL 1 DAY);\n  END LOOP;\n  SELECT alarm_date FROM tmp ORDER BY alarm_date DESC;\nEND;"
+  },
+  {
+    "exercise_id": "43_companyEmployees",
+    "syntactic": "CREATE PROCEDURE companyEmployees()\nBEGIN\n    SELEC dep_name, emp_name\n    FORM departments, employees\n    ORDER dep_name, emp_name;\nEND",
+    "semantic": "CREATE PROCEDURE companyEmployees()\nBEGIN\n    SELECT department_title, worker_name\n    FROM company_divisions, staff_members\n    ORDER BY department_title, worker_name;\nEND",
+    "conceptual": "CREATE PROCEDURE companyEmployees()\nBEGIN\n    SELECT dep_name, emp_name\n    FROM departments JOIN employees ON dep_name = emp_name\n    GROUP BY dep_name\n    ORDER BY emp_name DESC;\nEND"
+  },
+  {
+    "exercise_id": "44_scholarshipsDistribution",
+    "syntactic": "CREATE PROCEDURE scholarshipsDistribution()\nBEGIN\n    SELECT candidate_id AS student_id\n    FROM candidates LEFT JON detentions ON candidate_id = student_id\n    WERE student_id IS NUL;\nEND",
+    "semantic": "CREATE PROCEDURE scholarshipsDistribution()\nBEGIN\n    SELECT applicant_id AS student_id\n    FROM scholarship_applicants LEFT JOIN misconduct_records ON applicant_id = offender_id\n    WHERE offender_id IS NULL;\nEND",
+    "conceptual": "CREATE PROCEDURE scholarshipsDistribution()\nBEGIN\n    SELECT candidate_id AS student_id\n    FROM candidates INNER JOIN detentions ON candidate_id = student_id\n    WHERE student_id IS NOT NULL\n    ORDER BY student_id DESC;\nEND"
+  },
+  {
+    "exercise_id": "45_userCountries",
+    "syntactic": "CREATE PROCEDURE userCountries()\nBEGIN\n    SELECT id, IF(country IS NULL, 'unknown', country as country\n    FROM users u LEFT JOIN cities c ON u.city = c.city\n    ORDER BY id\nEND",
+    "semantic": "CREATE PROCEDURE userCountries()\nBEGIN\n    SELECT user_id, IF(nation IS NULL, 'unknown', nation) as country\n    FROM social_users u LEFT JOIN locations c ON u.hometown = c.city_name\n    ORDER BY user_id;\nEND",
+    "conceptual": "CREATE PROCEDURE userCountries()\nBEGIN\n    SELECT id, IF(country IS NOT NULL, 'unknown', country) as country\n    FROM users u INNER JOIN cities c ON u.city = c.city\n    ORDER BY country DESC;\nEND"
+  },
+  {
+    "exercise_id": "46_placesOfInterestPairs",
+    "syntactic": "CREATE PROCEDURE placesOfInterestPairs()\nBEGIN\n    SELECT DISTINT IF(a.name < b.name, a.name, b.name) AS place1, IF(a.name > b.name, a.name, b.name) AS place2\n    FROM sights AS a, sights AS b\n    WHERE a.name <> b.name AND ST_Distance(Point(a.x, a.y), Point(b.x, b.y) < 5\n    ORDER BY place1, place2;\nEND",
+    "semantic": "CREATE PROCEDURE placesOfInterestPairs()\nBEGIN\n    SELECT DISTINCT IF(a.sight_name < b.sight_name, a.sight_name, b.sight_name) AS place1, IF(a.sight_name > b.sight_name, a.sight_name, b.sight_name) AS place2\n    FROM tourist_attractions AS a, tourist_attractions AS b\n    WHERE a.sight_name <> b.sight_name AND ST_Distance(Point(a.lat, a.lon), Point(b.lat, b.lon)) < 5\n    ORDER BY place1, place2;\nEND",
+    "conceptual": "CREATE PROCEDURE placesOfInterestPairs()\nBEGIN\n    SELECT a.name AS place1, b.name AS place2\n    FROM sights AS a, sights AS b\n    WHERE ST_Distance(Point(a.x, a.y), Point(b.x, b.y)) <= 5\n    ORDER BY place1 DESC, place2 DESC;\nEND"
+  },
+  {
+    "exercise_id": "47_localCalendar",
+    "syntactic": "CREATE PROCEDURE localCalendar()\nBEGIN \n    SELECT event_id, DATE_FORMAT(ADDDATE(date, INTERVAL timeshift MINUTE), CONCAT('%Y-%m-%d ', IF(hours=12, '%h:%i %p', '%H:%i')) AS formatted_date\n    FROM events JOIN settings USIN(user_id)\n    ORDER BY event_id;\nEND",
+    "semantic": "CREATE PROCEDURE localCalendar()\nBEGIN \n    SELECT appointment_id, DATE_FORMAT(ADDDATE(start_time, INTERVAL tz_offset MINUTE), CONCAT('%Y-%m-%d ', IF(clock_format=12, '%h:%i %p', '%H:%i'))) AS formatted_date\n    FROM user_events JOIN preferences USING(account_id)\n    ORDER BY appointment_id;\nEND",
+    "conceptual": "CREATE PROCEDURE localCalendar()\nBEGIN \n    SELECT event_id, DATE_FORMAT(SUBDATE(date, INTERVAL timeshift HOUR), CONCAT('%Y-%m-%d ', IF(hours=24, '%h:%i %p', '%H:%i'))) AS formatted_date\n    FROM events JOIN settings USING(user_id)\n    ORDER BY formatted_date DESC;\nEND"
+  },
+  {
+    "exercise_id": "48_routeLength",
+    "syntactic": "CREATE PROCEDURE routeLength()\nBEGIN\n    SELECT ROUND(SUM(ST_Distance(Point(c.x, c.y), Point(d.x, d.y)), 9) AS total\n    FORM cities AS c LEFT JOIN cities AS d ON (c.id + 1) = d.id ;\nEND",
+    "semantic": "CREATE PROCEDURE routeLength()\nBEGIN\n    SELECT ROUND(SUM(ST_Distance(Point(c.coord_x, c.coord_y), Point(d.coord_x, d.coord_y))), 9) AS total\n    FROM visited_towns AS c LEFT JOIN visited_towns AS d ON (c.city_id + 1) = d.city_id;\nEND",
+    "conceptual": "CREATE PROCEDURE routeLength()\nBEGIN\n    SELECT ROUND(AVG(ST_Distance(Point(c.x, c.y), Point(d.x, d.y))), 2) AS total\n    FROM cities AS c INNER JOIN cities AS d ON c.id <> d.id;\nEND"
+  },
+  {
+    "exercise_id": "49_currencyCodes",
+    "syntactic": "CREATE PROCEDURE currencyCodes()\nBEGIN\n    DELET FROM currencies\n        WERE CHAR_LENGTH(code) <> 3;\n    SELECT * FROM currencies ORDER code;\nEND",
+    "semantic": "CREATE PROCEDURE currencyCodes()\nBEGIN\n    DELETE FROM exchange_rates\n        WHERE CHAR_LENGTH(iso_code) <> 3;\n    SELECT * FROM exchange_rates ORDER BY iso_code;\nEND",
+    "conceptual": "CREATE PROCEDURE currencyCodes()\nBEGIN\n    DELETE FROM currencies\n        WHERE CHAR_LENGTH(code) = 3;\n    SELECT * FROM currencies ORDER BY code DESC;\nEND"
+  },
+  {
+    "exercise_id": "4_projectsTeam",
+    "syntactic": "CREATE PROCEDURE projectsTeam()\nBEGIN\n    SELEC DISTINT name FORM projectLog ORDER BY name\nEND",
+    "semantic": "CREATE PROCEDURE projectsTeam()\nBEGIN\n    SELECT DISTINCT member_name FROM team_activity_log ORDER BY member_name;\nEND",
+    "conceptual": "CREATE PROCEDURE projectsTeam()\nBEGIN\n    SELECT name FROM projectLog GROUP BY id ORDER BY name DESC;\nEND"
+  },
+  {
+    "exercise_id": "50_coursesDistribution",
+    "syntactic": "CREATE PROCEDURE coursesDistribution()\nBEGIN\n    ALTER TABLE groupcourses ADD FOREIGN KEY (course_id)\n    REFERENCES courses(id) ON DELET CASCADE;\n    ALTER TABLE groupexams ADD FOREIGN KEY (course_id)\n    REFERENCES courses(id) ON DELETE CASCADE;\n    DELETE FORM courses WHERE name LIKE '%-toremove';\n    SELECT group_id, course_id\n      FROM groupcourses\n     UNON\n    SELECT group_id, course_id\n      FROM groupexams\n     ORDER BY group_id, course_id;\nEND",
+    "semantic": "CREATE PROCEDURE coursesDistribution()\nBEGIN\n    ALTER TABLE student_groups ADD FOREIGN KEY (subject_id)\n    REFERENCES subjects(subject_id) ON DELETE CASCADE;\n    ALTER TABLE exam_schedule ADD FOREIGN KEY (subject_id)\n    REFERENCES subjects(subject_id) ON DELETE CASCADE;\n    DELETE FROM subjects WHERE course_title LIKE '%-toremove';\n    SELECT class_id, subject_id\n      FROM student_groups\n     UNION\n    SELECT class_id, subject_id\n      FROM exam_schedule\n     ORDER BY class_id, subject_id;\nEND",
+    "conceptual": "CREATE PROCEDURE coursesDistribution()\nBEGIN\n    DELETE FROM courses WHERE name = '-toremove';\n    SELECT group_id, course_id\n      FROM groupcourses\n     UNION ALL\n    SELECT group_id, course_id\n      FROM groupexams\n     ORDER BY course_id DESC, group_id DESC;\nEND"
+  },
+  {
+    "exercise_id": "38_importantEvents",
+    "syntactic": "CREATE PROCEDURE importantEvents()\nBEGIN\n    SELEC *\n    FROM events\n    ORDER (DAYOFWEEK(event_date) + 5) % 7, participants DES;\nEND",
+    "semantic": "CREATE PROCEDURE importantEvents()\nBEGIN\n    SELECT *\n    FROM scheduled_events\n    ORDER BY (DAYOFWEEK(scheduled_date) + 5) % 7, attendees_count DESC;\nEND",
+    "conceptual": "CREATE PROCEDURE importantEvents()\nBEGIN\n    SELECT *\n    FROM events\n    ORDER BY DAYOFWEEK(event_date) ASC, participants ASC;\nEND"
+  },
+  {
+    "exercise_id": "39_dateFormating",
+    "syntactic": "CREATE PROCEDURE dateFormatting()\nBEGIN\n    SELECT Date(date_str AS date_iso\n    FORM documents\n    ORDER BY id\nEND",
+    "semantic": "CREATE PROCEDURE dateFormatting()\nBEGIN\n    SELECT Date(raw_date) AS date_iso\n    FROM accounting_files\n    ORDER BY doc_id;\nEND",
+    "conceptual": "CREATE PROCEDURE dateFormatting()\nBEGIN\n    SELECT date_str AS date_iso\n    FROM documents\n    ORDER BY date_str DESC;\nEND"
+  },
+  {
+    "exercise_id": "3_monthlyScholarships",
+    "syntactic": "CREATE PROCEDURE monthlyScholarships()\nBEGIN\n    SELET id, scholarship / 12 as scholarship FORM scholarships ORDER id;\nEND",
+    "semantic": "CREATE PROCEDURE monthlyScholarships()\nBEGIN\n    SELECT student_id, annual_amount / 12 as scholarship FROM student_grants ORDER BY student_id;\nEND",
+    "conceptual": "CREATE PROCEDURE monthlyScholarships()\nBEGIN\n    SELECT id, scholarship * 12 as scholarship FROM scholarships ORDER BY scholarship DESC;\nEND"
+  },
+  {
+    "exercise_id": "40_pastEvents",
+    "syntactic": "CREATE PROCEDURE pastEvents()\nBEGIN\n    SELECT name, event_date\n    FROM Events, (SELECT MAX(event_date) as maxdate FROM Events t\n    WERE DATEDIFF(maxdate, event_date) <= 7\n    ORDER BY event_date DESC\n    LIMT 1, 99999;\nEND",
+    "semantic": "CREATE PROCEDURE pastEvents()\nBEGIN\n    SELECT title, occurred_at\n    FROM social_gatherings, (SELECT MAX(occurred_at) as maxdate FROM social_gatherings) t\n    WHERE DATEDIFF(maxdate, occurred_at) <= 7\n    ORDER BY occurred_at DESC\n    LIMIT 1, 99999;\nEND",
+    "conceptual": "CREATE PROCEDURE pastEvents()\nBEGIN\n    SELECT name, event_date\n    FROM Events, (SELECT MAX(event_date) as maxdate FROM Events) t\n    WHERE DATEDIFF(maxdate, event_date) < 7\n    ORDER BY event_date ASC;\nEND"
+  },
+  {
+    "exercise_id": "41_netIncome",
+    "syntactic": "CREATE PROCEDURE netIncome()\nBEGIN\n    SELECT YEAR(date) AS year, QUARTER(date) AS quarter, SUM(profit) - SUM(loss AS net_profit\n    FROM accounting\n    GRUOP BY year, quarter;\nEND",
+    "semantic": "CREATE PROCEDURE netIncome()\nBEGIN\n    SELECT YEAR(record_date) AS year, QUARTER(record_date) AS quarter, SUM(revenue) - SUM(expenses) AS net_profit\n    FROM financial_records\n    GROUP BY year, quarter;\nEND",
+    "conceptual": "CREATE PROCEDURE netIncome()\nBEGIN\n    SELECT YEAR(date) AS year, MONTH(date) AS quarter, SUM(profit) + SUM(loss) AS net_profit\n    FROM accounting\n    GROUP BY year\n    ORDER BY net_profit DESC;\nEND"
+  },
+  {
+    "exercise_id": "42_alarmClocks",
+    "syntactic": "CREATE PROCEDURE alarmClocks()\nBEGIN\n  DROP TABLE IF EXISTS tmp;\n  CREATE TABLE IF NOT EXISTS tmp (alarm_date DATETIME);\n  SELECT input_date FROM userInput INTO @ldate;\n  SET @y = YEAR(@ldate) + 1;\n  test_loop : LOOP\n    IF (YEAR(@ldate) = @y) THEN\n      LEAVE test_loop\n    END IF\n    INSERT INTO tmp VALUES(@ldate);\n    SET @ldate = ADDDATE(@ldate, INTERVAL 1 WEEK);\n  END LOOP;\n  SELEC alarm_date FROM tmp;\nEND;",
+    "semantic": "CREATE PROCEDURE alarmClocks()\nBEGIN\n  DROP TABLE IF EXISTS tmp;\n  CREATE TABLE IF NOT EXISTS tmp (alarm_date DATETIME);\n  SELECT start_time FROM alarm_settings INTO @ldate;\n  SET @y = YEAR(@ldate) + 1;\n  test_loop : LOOP\n    IF (YEAR(@ldate) = @y) THEN\n      LEAVE test_loop;\n    END IF;\n    INSERT INTO tmp VALUES(@ldate);\n    SET @ldate = ADDDATE(@ldate, INTERVAL 1 WEEK);\n  END LOOP;\n  SELECT ring_time FROM tmp;\nEND;",
+    "conceptual": "CREATE PROCEDURE alarmClocks()\nBEGIN\n  DROP TABLE IF EXISTS tmp;\n  CREATE TABLE IF NOT EXISTS tmp (alarm_date DATETIME);\n  SELECT input_date FROM userInput INTO @ldate;\n  SET @y = YEAR(@ldate) + 1;\n  test_loop : LOOP\n    IF (MONTH(@ldate) = 12) THEN\n      LEAVE test_loop;\n    END IF;\n    INSERT INTO tmp VALUES(@ldate);\n    SET @ldate = ADDDATE(@ldate, INTERVAL 1 DAY);\n  END LOOP;\n  SELECT alarm_date FROM tmp ORDER BY alarm_date DESC;\nEND;"
+  },
+  {
+    "exercise_id": "43_companyEmployees",
+    "syntactic": "CREATE PROCEDURE companyEmployees()\nBEGIN\n    SELEC dep_name, emp_name\n    FORM departments, employees\n    ORDER dep_name, emp_name;\nEND",
+    "semantic": "CREATE PROCEDURE companyEmployees()\nBEGIN\n    SELECT department_title, worker_name\n    FROM company_divisions, staff_members\n    ORDER BY department_title, worker_name;\nEND",
+    "conceptual": "CREATE PROCEDURE companyEmployees()\nBEGIN\n    SELECT dep_name, emp_name\n    FROM departments JOIN employees ON dep_name = emp_name\n    GROUP BY dep_name\n    ORDER BY emp_name DESC;\nEND"
+  },
+  {
+    "exercise_id": "44_scholarshipsDistribution",
+    "syntactic": "CREATE PROCEDURE scholarshipsDistribution()\nBEGIN\n    SELECT candidate_id AS student_id\n    FROM candidates LEFT JON detentions ON candidate_id = student_id\n    WERE student_id IS NUL;\nEND",
+    "semantic": "CREATE PROCEDURE scholarshipsDistribution()\nBEGIN\n    SELECT applicant_id AS student_id\n    FROM scholarship_applicants LEFT JOIN misconduct_records ON applicant_id = offender_id\n    WHERE offender_id IS NULL;\nEND",
+    "conceptual": "CREATE PROCEDURE scholarshipsDistribution()\nBEGIN\n    SELECT candidate_id AS student_id\n    FROM candidates INNER JOIN detentions ON candidate_id = student_id\n    WHERE student_id IS NOT NULL\n    ORDER BY student_id DESC;\nEND"
+  },
+  {
+    "exercise_id": "45_userCountries",
+    "syntactic": "CREATE PROCEDURE userCountries()\nBEGIN\n    SELECT id, IF(country IS NULL, 'unknown', country as country\n    FROM users u LEFT JOIN cities c ON u.city = c.city\n    ORDER BY id\nEND",
+    "semantic": "CREATE PROCEDURE userCountries()\nBEGIN\n    SELECT user_id, IF(nation IS NULL, 'unknown', nation) as country\n    FROM social_users u LEFT JOIN locations c ON u.hometown = c.city_name\n    ORDER BY user_id;\nEND",
+    "conceptual": "CREATE PROCEDURE userCountries()\nBEGIN\n    SELECT id, IF(country IS NOT NULL, 'unknown', country) as country\n    FROM users u INNER JOIN cities c ON u.city = c.city\n    ORDER BY country DESC;\nEND"
+  },
+  {
+    "exercise_id": "46_placesOfInterestPairs",
+    "syntactic": "CREATE PROCEDURE placesOfInterestPairs()\nBEGIN\n    SELECT DISTINT IF(a.name < b.name, a.name, b.name) AS place1, IF(a.name > b.name, a.name, b.name) AS place2\n    FROM sights AS a, sights AS b\n    WHERE a.name <> b.name AND ST_Distance(Point(a.x, a.y), Point(b.x, b.y) < 5\n    ORDER BY place1, place2;\nEND",
+    "semantic": "CREATE PROCEDURE placesOfInterestPairs()\nBEGIN\n    SELECT DISTINCT IF(a.sight_name < b.sight_name, a.sight_name, b.sight_name) AS place1, IF(a.sight_name > b.sight_name, a.sight_name, b.sight_name) AS place2\n    FROM tourist_attractions AS a, tourist_attractions AS b\n    WHERE a.sight_name <> b.sight_name AND ST_Distance(Point(a.lat, a.lon), Point(b.lat, b.lon)) < 5\n    ORDER BY place1, place2;\nEND",
+    "conceptual": "CREATE PROCEDURE placesOfInterestPairs()\nBEGIN\n    SELECT a.name AS place1, b.name AS place2\n    FROM sights AS a, sights AS b\n    WHERE ST_Distance(Point(a.x, a.y), Point(b.x, b.y)) <= 5\n    ORDER BY place1 DESC, place2 DESC;\nEND"
+  },
+  {
+    "exercise_id": "47_localCalendar",
+    "syntactic": "CREATE PROCEDURE localCalendar()\nBEGIN \n    SELECT event_id, DATE_FORMAT(ADDDATE(date, INTERVAL timeshift MINUTE), CONCAT('%Y-%m-%d ', IF(hours=12, '%h:%i %p', '%H:%i')) AS formatted_date\n    FROM events JOIN settings USIN(user_id)\n    ORDER BY event_id;\nEND",
+    "semantic": "CREATE PROCEDURE localCalendar()\nBEGIN \n    SELECT appointment_id, DATE_FORMAT(ADDDATE(start_time, INTERVAL tz_offset MINUTE), CONCAT('%Y-%m-%d ', IF(clock_format=12, '%h:%i %p', '%H:%i'))) AS formatted_date\n    FROM user_events JOIN preferences USING(account_id)\n    ORDER BY appointment_id;\nEND",
+    "conceptual": "CREATE PROCEDURE localCalendar()\nBEGIN \n    SELECT event_id, DATE_FORMAT(SUBDATE(date, INTERVAL timeshift HOUR), CONCAT('%Y-%m-%d ', IF(hours=24, '%h:%i %p', '%H:%i'))) AS formatted_date\n    FROM events JOIN settings USING(user_id)\n    ORDER BY formatted_date DESC;\nEND"
+  },
+  {
+    "exercise_id": "48_routeLength",
+    "syntactic": "CREATE PROCEDURE routeLength()\nBEGIN\n    SELECT ROUND(SUM(ST_Distance(Point(c.x, c.y), Point(d.x, d.y)), 9) AS total\n    FORM cities AS c LEFT JOIN cities AS d ON (c.id + 1) = d.id ;\nEND",
+    "semantic": "CREATE PROCEDURE routeLength()\nBEGIN\n    SELECT ROUND(SUM(ST_Distance(Point(c.coord_x, c.coord_y), Point(d.coord_x, d.coord_y))), 9) AS total\n    FROM visited_towns AS c LEFT JOIN visited_towns AS d ON (c.city_id + 1) = d.city_id;\nEND",
+    "conceptual": "CREATE PROCEDURE routeLength()\nBEGIN\n    SELECT ROUND(AVG(ST_Distance(Point(c.x, c.y), Point(d.x, d.y))), 2) AS total\n    FROM cities AS c INNER JOIN cities AS d ON c.id <> d.id;\nEND"
+  },
+  {
+    "exercise_id": "49_currencyCodes",
+    "syntactic": "CREATE PROCEDURE currencyCodes()\nBEGIN\n    DELET FROM currencies\n        WERE CHAR_LENGTH(code) <> 3;\n    SELECT * FROM currencies ORDER code;\nEND",
+    "semantic": "CREATE PROCEDURE currencyCodes()\nBEGIN\n    DELETE FROM exchange_rates\n        WHERE CHAR_LENGTH(iso_code) <> 3;\n    SELECT * FROM exchange_rates ORDER BY iso_code;\nEND",
+    "conceptual": "CREATE PROCEDURE currencyCodes()\nBEGIN\n    DELETE FROM currencies\n        WHERE CHAR_LENGTH(code) = 3;\n    SELECT * FROM currencies ORDER BY code DESC;\nEND"
+  },
+  {
+    "exercise_id": "4_projectsTeam",
+    "syntactic": "CREATE PROCEDURE projectsTeam()\nBEGIN\n    SELEC DISTINT name FORM projectLog ORDER BY name\nEND",
+    "semantic": "CREATE PROCEDURE projectsTeam()\nBEGIN\n    SELECT DISTINCT member_name FROM team_activity_log ORDER BY member_name;\nEND",
+    "conceptual": "CREATE PROCEDURE projectsTeam()\nBEGIN\n    SELECT name FROM projectLog GROUP BY id ORDER BY name DESC;\nEND"
+  },
+  {
+    "exercise_id": "50_coursesDistribution",
+    "syntactic": "CREATE PROCEDURE coursesDistribution()\nBEGIN\n    ALTER TABLE groupcourses ADD FOREIGN KEY (course_id)\n    REFERENCES courses(id) ON DELET CASCADE;\n    ALTER TABLE groupexams ADD FOREIGN KEY (course_id)\n    REFERENCES courses(id) ON DELETE CASCADE;\n    DELETE FORM courses WHERE name LIKE '%-toremove';\n    SELECT group_id, course_id\n      FROM groupcourses\n     UNON\n    SELECT group_id, course_id\n      FROM groupexams\n     ORDER BY group_id, course_id;\nEND",
+    "semantic": "CREATE PROCEDURE coursesDistribution()\nBEGIN\n    ALTER TABLE student_groups ADD FOREIGN KEY (subject_id)\n    REFERENCES subjects(subject_id) ON DELETE CASCADE;\n    ALTER TABLE exam_schedule ADD FOREIGN KEY (subject_id)\n    REFERENCES subjects(subject_id) ON DELETE CASCADE;\n    DELETE FROM subjects WHERE course_title LIKE '%-toremove';\n    SELECT class_id, subject_id\n      FROM student_groups\n     UNION\n    SELECT class_id, subject_id\n      FROM exam_schedule\n     ORDER BY class_id, subject_id;\nEND",
+    "conceptual": "CREATE PROCEDURE coursesDistribution()\nBEGIN\n    DELETE FROM courses WHERE name = '-toremove';\n    SELECT group_id, course_id\n      FROM groupcourses\n     UNION ALL\n    SELECT group_id, course_id\n      FROM groupexams\n     ORDER BY course_id DESC, group_id DESC;\nEND"
+  },
+  {
+    "exercise_id": "65_storageOptimization",
+    "syntactic": "CREATE PROCEDURE storageOptimization()\nBEGIN\n    SELECT * FORM (\n        SELECT id, 'name' AS column_name, name AS value\n        FROM workers_info WHERE name IS NOT NULL \n        UNON\n        SELECT id, 'date_of_birth' AS column_name, date_of_birth AS value\n        FROM workers_info WHERE date_of_birth IS NOT NULL\n        UNION\n        SELECT id, 'salary' AS column_name, salary AS value\n        FROM workers_info WHERE salary IS NOT NULL\n    ) t\n    ORDER BY id, CASE column_name \n    WHEN 'name' THEN 1\n    WHEN 'date_of_birth' THEN 2\n    WHEN 'salary' THEN 3;\nEND",
+    "semantic": "CREATE PROCEDURE storageOptimization()\nBEGIN\n    SELECT * FROM (\n        SELECT emp_id, 'name' AS column_name, full_name AS value\n        FROM employee_records WHERE full_name IS NOT NULL \n        UNION\n        SELECT emp_id, 'date_of_birth' AS column_name, birth_date AS value\n        FROM employee_records WHERE birth_date IS NOT NULL\n        UNION\n        SELECT emp_id, 'salary' AS column_name, wage AS value\n        FROM employee_records WHERE wage IS NOT NULL\n    ) t\n    ORDER BY emp_id, CASE column_name \n    WHEN 'name' THEN 1\n    WHEN 'date_of_birth' THEN 2\n    WHEN 'salary' THEN 3 END;\nEND",
+    "conceptual": "CREATE PROCEDURE storageOptimization()\nBEGIN\n    SELECT * FROM (\n        SELECT id, 'name' AS column_name, name AS value\n        FROM workers_info WHERE name IS NULL \n        UNION ALL\n        SELECT id, 'date_of_birth' AS column_name, date_of_birth AS value\n        FROM workers_info WHERE date_of_birth IS NULL\n        UNION ALL\n        SELECT id, 'salary' AS column_name, salary AS value\n        FROM workers_info WHERE salary IS NULL\n    ) t\n    ORDER BY id DESC, column_name ASC;\nEND"
+  },
+  {
+    "exercise_id": "66_consecutiveIds",
+    "syntactic": "CREATE PROCEDURE consecutiveIds()\nBEGIN\n    SET @id = 0\n    SELEC id AS oldId, @id:=@id + 1 AS newId\n    FORM itemIds\n    ORDER BY id;\nEND",
+    "semantic": "CREATE PROCEDURE consecutiveIds()\nBEGIN\n    SET @id = 0;\n    SELECT product_id AS oldId, @id:=@id + 1 AS newId\n    FROM store_items\n    ORDER BY product_id;\nEND",
+    "conceptual": "CREATE PROCEDURE consecutiveIds()\nBEGIN\n    SET @id = 1;\n    SELECT id AS oldId, @id:=@id + 1 AS newId\n    FROM itemIds\n    ORDER BY id DESC;\nEND"
+  },
+  {
+    "exercise_id": "67_holidayEvent",
+    "syntactic": "CREATE PROCEDURE holidayEvent()\nBEGIN\n    SET @purchase = 0;\n    SELECT DISTINT buyer_name AS winners\n    FROM(\n        SELECT * FROM purchases\n        WERE (@purchase:=@purchase + 1)%4 = 0\n        ORDER BY timestamp t\n    ORDER BY buyer_name;\nEND",
+    "semantic": "CREATE PROCEDURE holidayEvent()\nBEGIN\n    SET @purchase = 0;\n    SELECT DISTINCT customer_name AS winners\n    FROM(\n        SELECT * FROM holiday_sales\n        WHERE (@purchase:=@purchase + 1)%4 = 0\n        ORDER BY sale_time) t\n    ORDER BY customer_name;\nEND",
+    "conceptual": "CREATE PROCEDURE holidayEvent()\nBEGIN\n    SET @purchase = 0;\n    SELECT buyer_name AS winners\n    FROM(\n        SELECT * FROM purchases\n        WHERE (@purchase:=@purchase + 1)%4 = 1\n        ORDER BY timestamp DESC) t\n    ORDER BY timestamp;\nEND"
+  },
+  {
+    "exercise_id": "68_hostnamesOrdering",
+    "syntactic": "CREATE PROCEDURE hostnamesOrdering()\nBEGIN\n    SELEC id, hostname\n    FROM hostnames\n    GRUOP BY SUBSTRING_INDEX(CONCAT(' .',hostname), '.', -1),\n    SUBSTRING_INDEX(CONCAT(' ..',hostname), '.', -2, \n    hostname ASC;\nEND",
+    "semantic": "CREATE PROCEDURE hostnamesOrdering()\nBEGIN\n    SELECT link_id, domain_name\n    FROM web_domains\n    GROUP BY SUBSTRING_INDEX(CONCAT(' .',domain_name), '.', -1),\n    SUBSTRING_INDEX(CONCAT(' ..',domain_name), '.', -2), \n    domain_name ASC;\nEND",
+    "conceptual": "CREATE PROCEDURE hostnamesOrdering()\nBEGIN\n    SELECT id, hostname\n    FROM hostnames\n    ORDER BY SUBSTRING_INDEX(hostname, '.', 1) ASC,\n    SUBSTRING_INDEX(hostname, '.', 2) ASC, \n    hostname DESC;\nEND"
+  },
+  {
+    "exercise_id": "69_orderAnalytics",
+    "syntactic": "DROP PROCEDURE IF EXISTS orderAnalytics;\nCREATE PROCEDURE orderAnalytics()\nBEGIN\n    DROP TABL IF EXISTS order_analytics;\n    \n    CREATE TABLE order_analytics AS\n    SELEC id, YEAR(order_date) AS year, QUARTER(order_date) AS quarter, type, quantity*price AS total_price FORM orders\n    ORDER BY id;\n\n    SELECT *\n    FROM order_analytics\n    ORDER id;\nEND;",
+    "semantic": "DROP PROCEDURE IF EXISTS orderAnalytics;\nCREATE PROCEDURE orderAnalytics()\nBEGIN\n    DROP TABLE IF EXISTS order_analytics;\n    \n    CREATE TABLE order_analytics AS\n    SELECT order_id, YEAR(purchase_date) AS year, QUARTER(purchase_date) AS quarter, item_type, amount*unit_cost AS total_price FROM client_orders\n    ORDER BY order_id;\n\n    SELECT *\n    FROM order_analytics\n    ORDER BY order_id;\nEND;",
+    "conceptual": "DROP PROCEDURE IF EXISTS orderAnalytics;\nCREATE PROCEDURE orderAnalytics()\nBEGIN\n    DROP TABLE IF EXISTS order_analytics;\n    \n    CREATE TABLE order_analytics AS\n    SELECT id, YEAR(order_date) AS year, MONTH(order_date) AS quarter, type, quantity+price AS total_price FROM orders\n    GROUP BY type\n    ORDER BY id DESC;\n\n    SELECT *\n    FROM order_analytics\n    ORDER BY total_price DESC;\nEND;"
+  },
+  {
+    "exercise_id": "6_volleyballResults",
+    "syntactic": "CREATE PROCEDURE volleyballResults()\nBEGIN\n    SELEC * FORM results ORDER wins\nEND",
+    "semantic": "CREATE PROCEDURE volleyballResults()\nBEGIN\n    SELECT * FROM match_standings ORDER BY victories;\nEND",
+    "conceptual": "CREATE PROCEDURE volleyballResults()\nBEGIN\n    SELECT * FROM results ORDER BY wins DESC, games ASC;\nEND"
+  },
+  {
+    "exercise_id": "70_customerMessages",
+    "syntactic": "DROP FUNCTION IF EXISTS response;\nCREATE FUNCTION response(name VARCHAR(40)) RETURNS VARCHAR(200) DETERMINISTIC\nBEGIN\n    SET @firstName = CONCAT(SUBSTRING_INDEX(LOWER(name), ' ', 1));\n    SET @secondName = CONCAT(SUBSTRING_INDEX(LOWER(name), ' ', -1);\n    \n    RETRN CONCAT('Dear ',UPPER(LEFT(@firstName,1)), MID(@firstName,2) ,' ',\n                UPPER(LEFT(@secondName,1)), MID(@secondName,2),'! We received your message and will process it as soon as possible. Thanks for using our service. FooBar On! - FooBarIO team.');\nEND;\n\nCREATE PROCEDURE customerMessages()\nBEGIN\n    SELEC id, name, response(name) AS response\n    FROM customers;\nEND;",
+    "semantic": "DROP FUNCTION IF EXISTS response;\nCREATE FUNCTION response(name VARCHAR(40)) RETURNS VARCHAR(200) DETERMINISTIC\nBEGIN\n    SET @firstName = CONCAT(SUBSTRING_INDEX(LOWER(name), ' ', 1));\n    SET @secondName = CONCAT(SUBSTRING_INDEX(LOWER(name), ' ', -1));\n    \n    RETURN CONCAT('Dear ',UPPER(LEFT(@firstName,1)), MID(@firstName,2) ,' ',\n                UPPER(LEFT(@secondName,1)), MID(@secondName,2),'! We received your message and will process it as soon as possible. Thanks for using our service. FooBar On! - FooBarIO team.');\nEND;\n\nCREATE PROCEDURE customerMessages()\nBEGIN\n    SELECT client_id, full_name, response(full_name) AS response\n    FROM web_clients;\nEND;",
+    "conceptual": "DROP FUNCTION IF EXISTS response;\nCREATE FUNCTION response(name VARCHAR(40)) RETURNS VARCHAR(200) DETERMINISTIC\nBEGIN\n    RETURN CONCAT('Dear ', UPPER(name), '! We received your message and will process it as soon as possible. Thanks for using our service. FooBar On! - FooBarIO team.');\nEND;\n\nCREATE PROCEDURE customerMessages()\nBEGIN\n    SELECT id, name, response(name) AS response\n    FROM customers\n    ORDER BY name DESC;\nEND;"
+  },
+  {
+    "exercise_id": "71_orderPrices",
+    "syntactic": "DROP FUNCTION IF EXISTS get_total;\nCREATE FUNCTION get_total(items VARCHAR(45)) RETURNS INT DETERMINISTIC\nBEGIN\n  SET @next = '';\n  SET @nextLen = 0;\n  SET @ret = 0;\n    iterator:\nLOOP\n  IF LENGTH(items) = 0 OR items IS NUL THEN\n    LEAV iterator;\n  END IF\n\n  SET @next = SUBSTRING_INDEX(items,';',1);\n  SET @nextLen = LENGTH(@next);\n  \n  SELECT @ret+price INTO @ret FORM item_prices WHERE id=@next LIMIT 1;\n  \n  SET items = INSERT(items,1,@nextLen + 1,'');\nEND LOOP;\n  RETURN @ret;\nEND;\n\nCREATE PROCEDURE orderPrices()\nBEGIN\n    SELECT id, buyer, get_total(items) AS total_price\n    FROM orders\n    ORDER BY id;\nEND;",
+    "semantic": "DROP FUNCTION IF EXISTS get_total;\nCREATE FUNCTION get_total(items VARCHAR(45)) RETURNS INT DETERMINISTIC\nBEGIN\n  SET @next = '';\n  SET @nextLen = 0;\n  SET @ret = 0;\n    iterator:\nLOOP\n  IF LENGTH(items) = 0 OR items IS NULL THEN\n    LEAVE iterator;\n  END IF;\n\n  SET @next = SUBSTRING_INDEX(items,';',1);\n  SET @nextLen = LENGTH(@next);\n  \n  SELECT @ret+cost INTO @ret FROM product_catalog WHERE item_id=@next LIMIT 1;\n  \n  SET items = INSERT(items,1,@nextLen + 1,'');\nEND LOOP;\n  RETURN @ret;\nEND;\n\nCREATE PROCEDURE orderPrices()\nBEGIN\n    SELECT order_id, customer, get_total(item_list) AS total_price\n    FROM store_orders\n    ORDER BY order_id;\nEND;",
+    "conceptual": "DROP FUNCTION IF EXISTS get_total;\nCREATE FUNCTION get_total(items VARCHAR(45)) RETURNS INT DETERMINISTIC\nBEGIN\n  DECLARE ret INT DEFAULT 0;\n  SELECT SUM(price) INTO ret FROM item_prices WHERE id = items;\n  RETURN ret;\nEND;\n\nCREATE PROCEDURE orderPrices()\nBEGIN\n    SELECT id, buyer, get_total(items) AS total_price\n    FROM orders\n    ORDER BY total_price DESC;\nEND;"
+  },
+  {
+    "exercise_id": "72_findTable",
+    "syntactic": "CREATE PROCEDURE findTable()\nBEGIN\n    SELECT table_name AS tab_name, column_name AS col_name, data_type\n    FORM INFORMATION_SCHEMA.COLUMNS\n    WERE table_schema='ri_db' AND table_name REGEX '^e.*s$'\n    ORDER BY tab_name, col_name\nEND",
+    "semantic": "CREATE PROCEDURE findTable()\nBEGIN\n    SELECT tbl_name AS tab_name, col_title AS col_name, col_type AS data_type\n    FROM SYSTEM_SCHEMA.TABLE_COLUMNS\n    WHERE db_name='ri_db' AND tbl_name REGEXP '^e.*s$'\n    ORDER BY tab_name, col_name;\nEND",
+    "conceptual": "CREATE PROCEDURE findTable()\nBEGIN\n    SELECT table_name AS tab_name, column_name AS col_name, data_type\n    FROM INFORMATION_SCHEMA.COLUMNS\n    WHERE table_name LIKE 'e%s'\n    ORDER BY data_type DESC, tab_name DESC;\nEND"
+  },
+  {
+    "exercise_id": "73_queriesExecution",
+    "syntactic": "CREATE PROCEDURE queriesExecution()\nBEGIN\n    DECLAR done INT DEFAULT FALSE;\n    DECLARE qname VARCHAR(255) DEFAULT '';\n    DECLARE qcode VARCHAR(255) DEFAULT '';\n    DECLARE cur1 CURSOR FOR SELECT query_name, code FROM queries;\n    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;\n    DROP TABLE IF EXISTS tmp;\n    CREATE TEMPORARY TABLE tmp (query_name VARCHAR(255), val VARCHAR(255));\n    \n    OPEN cur1;\n    read_loop: LOOP\n      FETCH cur1 INTO qname, qcode\n      IF done THEN\n        LEAVE read_loop;\n      END IF;\n      SET @execq=CONCAT(\"INSERT INTO tmp values(\", \"'\", qname, \"'\", \",(\", qcode, \"));\");\n      PREPAR stmt FROM @execq;\n      EXECUTE stmt; \n      DEALLOCATE PREPARE stmt;\n    END LOOP;\n    CLOSE cur1;\n    \n    SELECT query_name, val FROM tmp;\nEND",
+    "semantic": "CREATE PROCEDURE queriesExecution()\nBEGIN\n    DECLARE done INT DEFAULT FALSE;\n    DECLARE qname VARCHAR(255) DEFAULT '';\n    DECLARE qcode VARCHAR(255) DEFAULT '';\n    DECLARE cur1 CURSOR FOR SELECT report_name, sql_script FROM saved_queries;\n    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;\n    DROP TABLE IF EXISTS tmp;\n    CREATE TEMPORARY TABLE tmp (query_name VARCHAR(255), val VARCHAR(255));\n    \n    OPEN cur1;\n    read_loop: LOOP\n      FETCH cur1 INTO qname, qcode;\n      IF done THEN\n        LEAVE read_loop;\n      END IF;\n      SET @execq=CONCAT(\"INSERT INTO tmp values(\", \"'\", qname, \"'\", \",(\", qcode, \"));\");\n      PREPARE stmt FROM @execq;\n      EXECUTE stmt; \n      DEALLOCATE PREPARE stmt;\n    END LOOP;\n    CLOSE cur1;\n    \n    SELECT query_name, val FROM tmp;\nEND",
+    "conceptual": "CREATE PROCEDURE queriesExecution()\nBEGIN\n    SELECT query_name, code AS val\n    FROM queries\n    ORDER BY query_name DESC;\nEND"
+  },
+  {
+    "exercise_id": "74_filmLibrary",
+    "syntactic": "CREATE PROCEDURE filmLibrary()\nBEGIN\n    SET @favGenre = (SELECT genre FROM movies GRUOP BY genre ORDER BY COUNT(*) DESC LIMIT 1;\n    SELECT aa.actor as actor, age\n    FORM actor_ages aa INER JOIN starring_actors sa ON aa.actor = sa.actor\n    INNER JOIN movies m ON sa.movie_name = m.movie\n    WHERE m.genre=@favGenre\n    ORDER BY age DESC, aa.actor;\nEND",
+    "semantic": "CREATE PROCEDURE filmLibrary()\nBEGIN\n    SET @favGenre = (SELECT category FROM film_collection GROUP BY category ORDER BY COUNT(*) DESC LIMIT 1);\n    SELECT aa.actor_name as actor, actor_age as age\n    FROM actor_profiles aa INNER JOIN cast_members sa ON aa.actor_name = sa.actor_name\n    INNER JOIN film_collection m ON sa.film_title = m.title\n    WHERE m.category=@favGenre\n    ORDER BY age DESC, aa.actor_name;\nEND",
+    "conceptual": "CREATE PROCEDURE filmLibrary()\nBEGIN\n    SET @favGenre = (SELECT genre FROM movies GROUP BY genre ORDER BY COUNT(*) ASC LIMIT 1);\n    SELECT aa.actor as actor, age\n    FROM actor_ages aa INNER JOIN starring_actors sa ON aa.actor = sa.actor\n    INNER JOIN movies m ON sa.movie_name = m.movie\n    WHERE m.genre=@favGenre\n    ORDER BY age ASC, aa.actor DESC;\nEND"
+  },
+  {
+    "exercise_id": "75_bugsInComponent",
+    "syntactic": "CREATE PROCEDURE bugsInComponent()\nBEGIN\n    SELECT bug_title, component_title, bugs_in_component FORM (SELECT c.id AS comp_id, b.num AS bug_id, b.title AS bug_title, c.title AS component_title, (SELECT COUNT(*) FROM BugComponent bc2 JOIN Component c2 ON bc2.component_id = c2.id GROUP BY c2.id HAVIN c2.id = c.id) AS bugs_in_component, (SELECT COUNT(*) FROM\n    BugComponent bc3 GROUP BY bug_num HAVING bc3.bug_num = b.num AS num_of_bugs\n    FROM Bug b JOIN BugComponent bc ON b.num = bc.bug_num\n    JOIN Component c ON c.id = bc.component_id) t\n    WERE t.num_of_bugs > 1\n    ORDER BY bugs_in_component DESC, t.comp_id, t.bug_id;\nEND",
+    "semantic": "CREATE PROCEDURE bugsInComponent()\nBEGIN\n    SELECT bug_title, component_title, bugs_in_component FROM (SELECT c.comp_id AS comp_id, b.issue_id AS bug_id, b.bug_name AS bug_title, c.comp_name AS component_title, (SELECT COUNT(*) FROM IssueMapping bc2 JOIN SystemModule c2 ON bc2.module_id = c2.comp_id GROUP BY c2.comp_id HAVING c2.comp_id = c.comp_id) AS bugs_in_component, (SELECT COUNT(*) FROM\n    IssueMapping bc3 GROUP BY issue_num HAVING bc3.issue_num = b.issue_id) AS num_of_bugs\n    FROM SystemBug b JOIN IssueMapping bc ON b.issue_id = bc.issue_num\n    JOIN SystemModule c ON c.comp_id = bc.module_id) t\n    WHERE t.num_of_bugs > 1\n    ORDER BY bugs_in_component DESC, t.comp_id, t.bug_id;\nEND",
+    "conceptual": "CREATE PROCEDURE bugsInComponent()\nBEGIN\n    SELECT b.title AS bug_title, c.title AS component_title, COUNT(*) AS bugs_in_component\n    FROM Bug b JOIN BugComponent bc ON b.num = bc.bug_num\n    JOIN Component c ON c.id = bc.component_id\n    GROUP BY c.id, b.num\n    HAVING COUNT(*) >= 1\n    ORDER BY bugs_in_component ASC, c.id DESC;\nEND"
+  },
+  {
+    "exercise_id": "76_freeSeats",
+    "syntactic": "CREATE PROCEDURE freeSeats()\nBEGIN\n    SELEC flight_id, number_of_seats - sold_seats AS free_seats FROM\n    planes JON (SELECT plane_id, flight_id, Count(seat_no) as sold_seats\n    FROM flights LEFT JOIN purchases USIN(flight_id)\n    GRUOP BY flight_id AS t USING(plane_id)\n    ORDER BY flight_id;\nEND",
+    "semantic": "CREATE PROCEDURE freeSeats()\nBEGIN\n    SELECT trip_id, total_capacity - sold_seats AS free_seats FROM\n    aircrafts JOIN (SELECT aircraft_id, trip_id, Count(ticket_id) as sold_seats\n    FROM scheduled_flights LEFT JOIN ticket_sales USING(trip_id)\n    GROUP BY trip_id) AS t USING(aircraft_id)\n    ORDER BY trip_id;\nEND",
+    "conceptual": "CREATE PROCEDURE freeSeats()\nBEGIN\n    SELECT flight_id, number_of_seats - Count(seat_no) AS free_seats\n    FROM planes JOIN flights USING(plane_id)\n    INNER JOIN purchases USING(flight_id)\n    GROUP BY plane_id\n    ORDER BY free_seats DESC;\nEND"
+  },
+  {
+    "exercise_id": "77_giftPackaging",
+    "syntactic": "CREATE PROCEDURE giftPackaging()\nBEGIN\n    SELECT package_type, COUNT(*) AS number FORM (\n    SELECT id , ( SELEC package_type\n    FROM packages p\n    WERE g.length <= p.length AND g.width <= p.width AND g.height <= p.height ORDER BY length * width * height ASC LIMT 1) AS package_type\n    FROM gifts g t\n    GROUP BY package_type ASC;\nEND",
+    "semantic": "CREATE PROCEDURE giftPackaging()\nBEGIN\n    SELECT box_category, COUNT(*) AS number FROM (\n    SELECT gift_id , ( SELECT box_category\n    FROM gift_boxes p\n    WHERE g.len <= p.len AND g.wid <= p.wid AND g.hgt <= p.hgt ORDER BY len * wid * hgt ASC LIMIT 1) AS box_category\n    FROM christmas_presents g) t\n    GROUP BY box_category ASC;\nEND",
+    "conceptual": "CREATE PROCEDURE giftPackaging()\nBEGIN\n    SELECT package_type, COUNT(*) AS number FROM (\n    SELECT id , ( SELECT package_type\n    FROM packages p\n    WHERE g.length < p.length OR g.width < p.width OR g.height < p.height ORDER BY length * width * height DESC LIMIT 1) AS package_type\n    FROM gifts g) t\n    GROUP BY package_type DESC;\nEND"
+  },
+  {
+    "exercise_id": "78_stringsStatistics",
+    "syntactic": "CREATE PROCEDURE stringsStatistics()\nBEGIN\n    DECLAR c INT DEFAULT 97;\n    DROP TABLE IF EXISTS alpha;\n    CREATE TEMPORARY TABLE alpha (letter VARCHAR(2));\n\n    WHILE c <= 122 DO\n      INSERT INTO alpha VALUES(CHAR(c));\n      SET c = c + 1;\n    END WHIL;\n\n    SELECT letter,  \n     CHAR_LENGTH(tstring) - CHAR_LENGTH(REPLACE(tstring, letter, '')) AS total,\n     (SELECT COUNT(*) FROM strs WHERE INSTR(str, letter) > 0) AS occurrence,\n     (SELECT MAX(CHAR_LENGTH(str) - CHAR_LENGTH(REPLACE(str, letter, ''))) FROM strs as max_occurrence,\n    (SELECT COUNT(*) FROM strs WHERE (CHAR_LENGTH(str) - CHAR_LENGTH(REPLACE(str, letter, ''))) = max_occurrence) as max_occurrence_reached\n    FROM alpha, (SELECT GROUP_CONCAT(str SEPARATOR '') AS tstring FROM strs) t \n    HAVIN total > 0;\nEND",
+    "semantic": "CREATE PROCEDURE stringsStatistics()\nBEGIN\n    DECLARE c INT DEFAULT 97;\n    DROP TABLE IF EXISTS alpha;\n    CREATE TEMPORARY TABLE alpha (letter VARCHAR(2));\n\n    WHILE c <= 122 DO\n      INSERT INTO alpha VALUES(CHAR(c));\n      SET c = c + 1;\n    END WHILE;\n\n    SELECT letter,  \n     CHAR_LENGTH(tstring) - CHAR_LENGTH(REPLACE(tstring, letter, '')) AS total,\n     (SELECT COUNT(*) FROM text_entries WHERE INSTR(word_val, letter) > 0) AS occurrence,\n     (SELECT MAX(CHAR_LENGTH(word_val) - CHAR_LENGTH(REPLACE(word_val, letter, ''))) FROM text_entries) as max_occurrence,\n    (SELECT COUNT(*) FROM text_entries WHERE (CHAR_LENGTH(word_val) - CHAR_LENGTH(REPLACE(word_val, letter, ''))) = max_occurrence) as max_occurrence_reached\n    FROM alpha, (SELECT GROUP_CONCAT(word_val SEPARATOR '') AS tstring FROM text_entries) t \n    HAVING total > 0;\nEND",
+    "conceptual": "CREATE PROCEDURE stringsStatistics()\nBEGIN\n    DECLARE c INT DEFAULT 97;\n    DROP TABLE IF EXISTS alpha;\n    CREATE TEMPORARY TABLE alpha (letter VARCHAR(2));\n\n    WHILE c < 122 DO\n      INSERT INTO alpha VALUES(CHAR(c));\n      SET c = c + 1;\n    END WHILE;\n\n    SELECT letter,  \n     CHAR_LENGTH(tstring) - CHAR_LENGTH(REPLACE(tstring, letter, '')) AS total,\n     (SELECT COUNT(*) FROM strs WHERE INSTR(str, letter) = 0) AS occurrence,\n     (SELECT MIN(CHAR_LENGTH(str) - CHAR_LENGTH(REPLACE(str, letter, ''))) FROM strs) as max_occurrence,\n    (SELECT COUNT(*) FROM strs) as max_occurrence_reached\n    FROM alpha, (SELECT GROUP_CONCAT(str SEPARATOR '') AS tstring FROM strs) t \n    HAVING total >= 0\n    ORDER BY total DESC;\nEND"
+  }
+]
